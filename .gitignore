@@ -1,0 +1,13 @@
+# Object files
+*.o
+
+# Static libraries
+*.a
+
+# Test binaries
+test/run
+test/run.exe
+
+# Editor/OS files
+.DS_Store
+Thumbs.db
