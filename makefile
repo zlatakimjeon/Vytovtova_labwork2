@@ -2,31 +2,49 @@
 CC = gcc
 CFLAGS = -Wall -Wextra -pedantic -std=c11 -Iinclude -g
 
-# Исходники и объектники
+# Определяем расширение для Windows
+EXE =
+ifeq ($(OS),Windows_NT)
+    EXE = .exe
+endif
+
+# Исходники и объектники для библиотеки
 SRC = src/relation.c
 OBJ = $(SRC:.c=.o)
 
-# Имя библиотеки
+# Папка и имя библиотеки
 LIBDIR = lib
 LIB = $(LIBDIR)/librelation.a
 
-# Основное правило
-all: $(LIB)
+# Тестовый бинарник
+TEST = test/run$(EXE)
+TESTSRC = test/test.c test/test_relation.c
 
-# Правило для библиотеки
+# Цель по умолчанию
+all: $(LIB) $(TEST)
+
+# Создание статической библиотеки
 $(LIB): $(OBJ) | $(LIBDIR)
 	ar rcs $@ $^
 
-# Создание папки для библиотеки (кроссплатформенно)
+# Создание директории для библиотеки
 $(LIBDIR):
 	mkdir -p $(LIBDIR)
 
-# Правило компиляции .c -> .o
+# Компиляция .c -> .o
 src/%.o: src/%.c
 	$(CC) $(CFLAGS) -c -o $@ $<
 
+# Сборка тестов
+$(TEST): $(TESTSRC) $(LIB)
+	$(CC) $(CFLAGS) -o $@ $(TESTSRC) $(LIB)
+
+# Запуск тестов
+test: $(TEST)
+	./$(TEST)
+
 # Очистка
 clean:
-	rm -f $(OBJ) $(LIB)
+	rm -f $(OBJ) $(LIB) $(TEST)
 
-.PHONY: all clean
+.PHONY: all clean test
