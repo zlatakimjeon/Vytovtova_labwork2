@@ -3,6 +3,13 @@
 
 struct Relation *join_binary (struct Relation *r, struct Relation *s){
 	if (r == NULL || s == NULL) return NULL;
+	if (r->size == 0 || s->size == 0) {
+        struct Relation *result = malloc(sizeof(struct Relation));
+        if (result == NULL) return NULL;
+        result->pairs = NULL;
+        result->size = 0;
+        return result;
+    }
 
 	unsigned max_size = r->size + s->size;
 	struct Pair *result_pairs = malloc(max_size * sizeof(struct Pair));
@@ -32,24 +39,26 @@ struct Relation *join_binary (struct Relation *r, struct Relation *s){
 		}
 	}
 
-	if (result_size == 0) {
+	struct Pair *final_pairs = result_pairs;
+    if (result_size == 0) {
         free(result_pairs);
-        result_pairs = NULL;
+        final_pairs = NULL;
     } else if (result_size < max_size) {
         struct Pair *temp = realloc(result_pairs, result_size * sizeof(struct Pair));
         if (temp != NULL) {
-            result_pairs = temp;
+            final_pairs = temp;
         }
+    }
 
-	struct Relation *result = malloc(sizeof(struct Relation));
-	if (result == NULL) {
-    		free(result_pairs);
-    		return NULL;
-	}
-	result->pairs = result_pairs;
-	result->size = result_size;
-	return result;
-	}
+    struct Relation *result = malloc(sizeof(struct Relation));
+    if (result == NULL) {
+        if (final_pairs != NULL) free(final_pairs);
+        return NULL;
+    }
+    
+    result->pairs = final_pairs;
+    result->size = result_size;
+    return result;
 }
 
 void free_relation (struct Relation *rel) {
