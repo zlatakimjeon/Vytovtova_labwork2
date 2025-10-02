@@ -31,21 +31,19 @@ struct Relation *join_binary (struct Relation *r, struct Relation *s){
 			}
 		}
 	}
-	struct Pair *final_pairs = result_pairs;
+
 	if (result_size == 0) {
-		free(result_pairs);
-		final_pairs = NULL;
-	}
-	else if (result_size != max_size){
-		final_pairs = realloc(result_pairs, result_size * sizeof(struct Pair));
-		if (final_pairs == NULL) {
-			final_pairs = result_pairs;
-		}
-	}
+        free(result_pairs);
+        result_pairs = NULL;
+    } else if (result_size < max_size) {
+        struct Pair *temp = realloc(result_pairs, result_size * sizeof(struct Pair));
+        if (temp != NULL) {
+            result_pairs = temp;
+        }
 
 	struct Relation *result = malloc(sizeof(struct Relation));
-	if (!result) {
-    		free(final_pairs);
+	if (result = NULL) {
+    		free(result_pairs);
     		return NULL;
 	}
 	result->pairs = final_pairs;
