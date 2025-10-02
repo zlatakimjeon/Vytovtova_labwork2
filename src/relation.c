@@ -42,13 +42,14 @@ struct Relation *join_binary (struct Relation *r, struct Relation *s){
         }
 
 	struct Relation *result = malloc(sizeof(struct Relation));
-	if (result = NULL) {
+	if (result == NULL) {
     		free(result_pairs);
     		return NULL;
 	}
 	result->pairs = result_pairs;
 	result->size = result_size;
 	return result;
+	}
 }
 
 void free_relation (struct Relation *rel) {
