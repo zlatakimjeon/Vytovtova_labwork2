@@ -46,7 +46,7 @@ struct Relation *join_binary (struct Relation *r, struct Relation *s){
     		free(result_pairs);
     		return NULL;
 	}
-	result->pairs = final_pairs;
+	result->pairs = result_pairs;
 	result->size = result_size;
 	return result;
 }
